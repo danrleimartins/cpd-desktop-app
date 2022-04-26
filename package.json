@@ -1,0 +1,23 @@
+{
+  "name": "electron-btc-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danrleimartins/electron-btc-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danrleimartins/electron-btc-app/issues"
+  },
+  "homepage": "https://github.com/danrleimartins/electron-btc-app#readme",
+  "devDependencies": {
+    "electron": "18.1.0"
+  }
+}
