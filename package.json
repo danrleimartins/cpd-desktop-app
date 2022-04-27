@@ -21,6 +21,7 @@
     "electron": "18.1.0"
   },
   "dependencies": {
-    "@electron/remote": "^2.0.8"
+    "@electron/remote": "^2.0.8",
+    "axios": "^0.27.2"
   }
 }
