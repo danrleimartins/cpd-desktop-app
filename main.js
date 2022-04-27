@@ -4,9 +4,11 @@ const { app, BrowserWindow, Menu } = require('electron');
 const shell = require('electron').shell; 
 
 // Creating browser window
+let win;
+
 const createWindow = () => {
-    const win = new BrowserWindow({
-        width: 800,
+    win = new BrowserWindow({
+        width: 850,
         height: 600
     });
     // And load the index.html of the app.
@@ -20,9 +22,6 @@ const createWindow = () => {
         {
             label: 'Menu',
             submenu: [
-                {
-                    label: 'Adjust Notification Value'
-                },
                 {
                     label: 'MarketCap',
                     click() {
@@ -40,7 +39,15 @@ const createWindow = () => {
         },
         //Multiple menus
         {
-            label: 'Info'
+            label: 'Info',
+            submenu: [
+                {
+                    label : 'GitHub Repository',
+                    click() {
+                        shell.openExternal('https://github.com/danrleimartins/electron-btc-app')
+                    }
+                }
+            ]
         }
     ]);
     Menu.setApplicationMenu(menu);
