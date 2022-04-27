@@ -1,7 +1,7 @@
-const { app, BrowserWindow, Menu } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 
 // The shell module allows us to manage files and URLs
-const shell = require('electron').shell; 
+const shell = require('electron').shell;
 
 // Creating browser window
 let win;
@@ -9,9 +9,14 @@ let win;
 const createWindow = () => {
     win = new BrowserWindow({
         width: 850,
-        height: 600
+        height: 600,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+        }
     });
-    // And load the index.html of the app.
+    // And load index.html file
     win.loadFile('src/index.html');
 
     // Open development tools to help troubleshoot code
@@ -28,6 +33,12 @@ const createWindow = () => {
                         shell.openExternal('https://www.dailyfx.com/eur-usd')
                     }
                 },
+                {
+                    label: 'GitHub Repository',
+                    click() {
+                        shell.openExternal('https://github.com/danrleimartins/electron-btc-app')
+                    }
+                },
                 { type: 'separator' },
                 {
                     label: 'Exit',
@@ -37,18 +48,6 @@ const createWindow = () => {
                 },
             ]
         },
-        //Multiple menus
-        {
-            label: 'Info',
-            submenu: [
-                {
-                    label : 'GitHub Repository',
-                    click() {
-                        shell.openExternal('https://github.com/danrleimartins/electron-btc-app')
-                    }
-                }
-            ]
-        }
     ]);
     Menu.setApplicationMenu(menu);
 
@@ -63,4 +62,38 @@ app.on('window-all-closed', () => {
 // the browser window.
 app.whenReady().then(() => {
     createWindow();
+})
+
+// Creating new window
+let addWindowEUR;
+
+ipcMain.on('main:add', event => {
+    addWindowEUR = new BrowserWindow({
+        width: 500,
+        height: 200,
+        frame: false, //removes top toolbar
+        transparent: true,
+        alwaysOnTop: true,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true
+        }
+    });
+    // Loading add.html file into new window
+    addWindowEUR.loadURL(`file://${__dirname}/src/add.html`);
+
+    //addWindowEUR.webContents.openDevTools();
+
+    addWindowEUR.on('closed', () => {
+        addWindowEUR = null;
+    });
+});
+
+// Closing window event
+ipcMain.on('close-window', event => {
+
+    //close the window object
+    addWindowEUR.close();
+
 })

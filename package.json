@@ -19,5 +19,8 @@
   "homepage": "https://github.com/danrleimartins/electron-btc-app#readme",
   "devDependencies": {
     "electron": "18.1.0"
+  },
+  "dependencies": {
+    "@electron/remote": "^2.0.8"
   }
 }
