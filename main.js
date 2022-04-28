@@ -97,3 +97,8 @@ ipcMain.on('close-window', event => {
     addWindowEUR.close();
 
 })
+
+// Catch the input from add.html and send it back to index.js
+ipcMain.on('update-notify-value', (event, arg) => {
+    win.webContents.send('targetPriceVal', arg);
+})
