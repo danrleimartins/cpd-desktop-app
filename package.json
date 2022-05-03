@@ -4,6 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
+    "test": "mocha",
     "start": "electron ."
   },
   "repository": {
@@ -18,7 +19,9 @@
   },
   "homepage": "https://github.com/danrleimartins/electron-btc-app#readme",
   "devDependencies": {
-    "electron": "18.1.0"
+    "chai": "^4.3.6",
+    "electron": "18.1.0",
+    "mocha": "^9.2.2"
   },
   "dependencies": {
     "@electron/remote": "^2.0.8",
