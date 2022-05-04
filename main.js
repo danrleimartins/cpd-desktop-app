@@ -102,3 +102,41 @@ ipcMain.on('close-window', event => {
 ipcMain.on('update-notify-value', (event, arg) => {
     win.webContents.send('targetPriceVal', arg);
 })
+
+// BTC USD Add Window
+let addWindowUSD;
+
+ipcMain.on('main:addUSD', event => {
+    addWindowUSD = new BrowserWindow({
+        width: 500,
+        height: 200,
+        frame: false,
+        transparent: true,
+        alwaysOnTop: true,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true
+        }
+    });
+    addWindowUSD.loadURL(`file://${__dirname}/src/add-usd.html`);
+
+    //addWindowUSD.webContents.openDevTools();
+
+    addWindowUSD.on('closed', () => {
+        addWindowUSD = null;
+    });
+});
+
+// Closing window event
+ipcMain.on('close-window-usd', event => {
+
+    //close the window object
+    addWindowUSD.close();
+
+})
+
+// Catch the input from add-usd.html and send it back to index.js
+ipcMain.on('update-notify-value-usd', (event, arg) => {
+    win.webContents.send('targetPriceValUSD', arg);
+})
