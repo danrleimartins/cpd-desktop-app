@@ -119,7 +119,7 @@ ipcMain.on('main:addUSD', event => {
             enableRemoteModule: true
         }
     });
-    addWindowUSD.loadURL(`file://${__dirname}/src/add-usd.html`);
+    addWindowUSD.loadURL(`file://${__dirname}/src/usd.html`);
 
     //addWindowUSD.webContents.openDevTools();
 
@@ -136,7 +136,45 @@ ipcMain.on('close-window-usd', event => {
 
 })
 
-// Catch the input from add-usd.html and send it back to index.js
+// Catch the input from usd.html and send it back to index.js
 ipcMain.on('update-notify-value-usd', (event, arg) => {
     win.webContents.send('targetPriceValUSD', arg);
+})
+
+// BTC BRL Add Window
+let addWindowBRL;
+
+ipcMain.on('main:addBRL', event => {
+    addWindowBRL = new BrowserWindow({
+        width: 500,
+        height: 200,
+        frame: false,
+        transparent: true,
+        alwaysOnTop: true,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true
+        }
+    });
+    addWindowBRL.loadURL(`file://${__dirname}/src/brl.html`);
+
+    //addWindowBRL.webContents.openDevTools();
+
+    addWindowBRL.on('closed', () => {
+        addWindowUSD = null;
+    });
+});
+
+// Closing window event
+ipcMain.on('close-window-brl', event => {
+
+    //close the window object
+    addWindowBRL.close();
+
+})
+
+// Catch the input from brl.html and send it back to index.js
+ipcMain.on('update-notify-value-brl', (event, arg) => {
+    win.webContents.send('targetPriceValBRL', arg);
 })

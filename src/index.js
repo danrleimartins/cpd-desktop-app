@@ -78,3 +78,39 @@ ipcRenderer.on('targetPriceValUSD', (event, arg) => {
     targetPriceValUSD = Number(arg);
     targetPriceUSD.innerHTML = '$' + targetPriceValUSD.toLocaleString('en');
 })
+
+// BTC BRL Section
+
+var priceBRL = document.getElementById('priceBRL');
+var targetPriceBRL = document.getElementById('targetBRL');
+var targetPriceValBRL;
+
+// Function that will fetch the current BTC price from an API, display it to screen and compare to target price
+function getBTCBRL() {
+  axios.get('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC&tsyms=BRL')
+    .then(res => {
+      const cryptos = res.data.BTC.BRL;
+      priceBRL.innerHTML = 'R$' + cryptos.toLocaleString('en');
+
+      // If statement to check BTC value is empty and if it's less than the current price
+      if (targetPriceBRL.innerHTML != '' && targetPriceValBRL < cryptos) {
+        // If ok, prompts notification to user
+        const myNotification = new window.Notification(notification.title, notification);
+      }
+
+    })
+}
+// Run getBTC function and set interval to update price in every 10 seconds
+getBTCBRL();
+setInterval(getBTCBRL, 10000);
+
+// Clicking on the button will trigger the ipcRenderer to send a message to ipcMain to open new window
+document.getElementById('notifyBtnBRL').addEventListener('click', event => {
+  ipcRenderer.send('main:addBRL');
+});
+
+// Receives targetPrice and updates the index.html file
+ipcRenderer.on('targetPriceValBRL', (event, arg) => {
+  targetPriceValBRL = Number(arg);
+  targetPriceBRL.innerHTML = '$' + targetPriceValBRL.toLocaleString('en');
+})
