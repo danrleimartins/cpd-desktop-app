@@ -1,3 +1,4 @@
+// Import common modules
 const electron = require('electron');
 const { ipcRenderer } = electron;
 const axios = require('axios'); // HTTP library that connects to APIs

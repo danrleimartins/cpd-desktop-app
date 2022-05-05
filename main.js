@@ -1,3 +1,4 @@
+// Import common modules
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 
 // The shell module allows us to manage files and URLs
@@ -6,16 +7,18 @@ const shell = require('electron').shell;
 // Set environment
 process.env.NODE_ENV = 'development';
 
-// Creating browser windows
+// Windows variables
 let win;
 let addWindowEUR;
 let addWindowUSD;
 let addWindowBRL;
 
+// Creating main window
 const createWindow = () => {
     win = new BrowserWindow({
         width: 850,
         height: 600,
+        icon: 'assets/img/btc.ico',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -37,8 +40,10 @@ app.whenReady().then(() => {
     createWindow();
 
     // Build menu from template
+    // Reference: Tutorial_Week_12 - Shopping App
     const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-    // Insert menu
+    // Insert menu into application
+    // Reference: Tutorial_Week_12 - Shopping App
     Menu.setApplicationMenu(mainMenu);
 })
 
@@ -71,10 +76,12 @@ const mainMenuTemplate = [
 ];
 
 // If OSX, add empty object to menu
+// Reference: Tutorial_Week_12 - Shopping App
 if (process.platform == 'darwin') {
     mainMenuTemplate.unshift({});
 }
 // Add developer tools option if in dev
+// Reference: Tutorial_Week_12 - Shopping App
 if (process.env.NODE_ENV !== 'production') {
     mainMenuTemplate.push({
         label: 'Developer Tools',
@@ -110,8 +117,6 @@ ipcMain.on('main:add', event => {
     // Loading add.html file into new window
     addWindowEUR.loadURL(`file://${__dirname}/src/add.html`);
 
-    //addWindowEUR.webContents.openDevTools();
-
     addWindowEUR.on('closed', () => {
         addWindowEUR = null;
     });
@@ -119,10 +124,8 @@ ipcMain.on('main:add', event => {
 
 // Closing window event
 ipcMain.on('close-window', event => {
-
     //close the window object
     addWindowEUR.close();
-
 })
 
 // Catch the input from add.html and send it back to index.js
@@ -131,7 +134,6 @@ ipcMain.on('update-notify-value', (event, arg) => {
 })
 
 // BTC USD Add Window
-
 ipcMain.on('main:addUSD', event => {
     addWindowUSD = new BrowserWindow({
         width: 500,
@@ -154,10 +156,8 @@ ipcMain.on('main:addUSD', event => {
 
 // Closing window event
 ipcMain.on('close-window-usd', event => {
-
     //close the window object
     addWindowUSD.close();
-
 })
 
 // Catch the input from usd.html and send it back to index.js
@@ -166,7 +166,6 @@ ipcMain.on('update-notify-value-usd', (event, arg) => {
 })
 
 // BTC BRL Add Window
-
 ipcMain.on('main:addBRL', event => {
     addWindowBRL = new BrowserWindow({
         width: 500,
@@ -182,8 +181,6 @@ ipcMain.on('main:addBRL', event => {
     });
     addWindowBRL.loadURL(`file://${__dirname}/src/brl.html`);
 
-    //addWindowBRL.webContents.openDevTools();
-
     addWindowBRL.on('closed', () => {
         addWindowUSD = null;
     });
@@ -191,10 +188,8 @@ ipcMain.on('main:addBRL', event => {
 
 // Closing window event
 ipcMain.on('close-window-brl', event => {
-
     //close the window object
     addWindowBRL.close();
-
 })
 
 // Catch the input from brl.html and send it back to index.js
