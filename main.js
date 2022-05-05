@@ -3,8 +3,14 @@ const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 // The shell module allows us to manage files and URLs
 const shell = require('electron').shell;
 
-// Creating browser window
+// Set environment
+process.env.NODE_ENV = 'development';
+
+// Creating browser windows
 let win;
+let addWindowEUR;
+let addWindowUSD;
+let addWindowBRL;
 
 const createWindow = () => {
     win = new BrowserWindow({
@@ -18,39 +24,6 @@ const createWindow = () => {
     });
     // And load index.html file
     win.loadFile('src/index.html');
-
-    // Open development tools to help troubleshoot code
-    win.webContents.openDevTools();
-
-    // Creating the app's menu
-    var menu = Menu.buildFromTemplate([
-        {
-            label: 'Menu',
-            submenu: [
-                {
-                    label: 'MarketCap',
-                    click() {
-                        shell.openExternal('https://www.dailyfx.com/eur-usd')
-                    }
-                },
-                {
-                    label: 'GitHub Repository',
-                    click() {
-                        shell.openExternal('https://github.com/danrleimartins/electron-btc-app')
-                    }
-                },
-                { type: 'separator' },
-                {
-                    label: 'Exit',
-                    click() {
-                        app.quit()
-                    }
-                },
-            ]
-        },
-    ]);
-    Menu.setApplicationMenu(menu);
-
 }
 
 // Exiting app when closing the window
@@ -62,11 +35,65 @@ app.on('window-all-closed', () => {
 // the browser window.
 app.whenReady().then(() => {
     createWindow();
+
+    // Build menu from template
+    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+    // Insert menu
+    Menu.setApplicationMenu(mainMenu);
 })
 
-// Creating new window
-let addWindowEUR;
+// Create app's menu
+const mainMenuTemplate = [
+    {
+        label: 'Menu',
+        submenu: [
+            {
+                label: 'Bitcoin (BTC) Price Index',
+                click() {
+                    shell.openExternal('https://cointelegraph.com/bitcoin-price')
+                }
+            },
+            {
+                label: 'GitHub Repository',
+                click() {
+                    shell.openExternal('https://github.com/danrleimartins/electron-btc-app')
+                }
+            },
+            { type: 'separator' },
+            {
+                label: 'Exit',
+                click() {
+                    app.quit()
+                }
+            },
+        ]
+    }
+];
 
+// If OSX, add empty object to menu
+if (process.platform == 'darwin') {
+    mainMenuTemplate.unshift({});
+}
+// Add developer tools option if in dev
+if (process.env.NODE_ENV !== 'production') {
+    mainMenuTemplate.push({
+        label: 'Developer Tools',
+        submenu: [
+            {
+                role: 'reload'
+            },
+            {
+                label: 'Toggle DevTools',
+                accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
+                click(item, focusedWindow) {
+                    focusedWindow.toggleDevTools();
+                }
+            }
+        ]
+    });
+}
+
+// Add window event
 ipcMain.on('main:add', event => {
     addWindowEUR = new BrowserWindow({
         width: 500,
@@ -104,7 +131,6 @@ ipcMain.on('update-notify-value', (event, arg) => {
 })
 
 // BTC USD Add Window
-let addWindowUSD;
 
 ipcMain.on('main:addUSD', event => {
     addWindowUSD = new BrowserWindow({
@@ -120,8 +146,6 @@ ipcMain.on('main:addUSD', event => {
         }
     });
     addWindowUSD.loadURL(`file://${__dirname}/src/usd.html`);
-
-    //addWindowUSD.webContents.openDevTools();
 
     addWindowUSD.on('closed', () => {
         addWindowUSD = null;
@@ -142,7 +166,6 @@ ipcMain.on('update-notify-value-usd', (event, arg) => {
 })
 
 // BTC BRL Add Window
-let addWindowBRL;
 
 ipcMain.on('main:addBRL', event => {
     addWindowBRL = new BrowserWindow({
