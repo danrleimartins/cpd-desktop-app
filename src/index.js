@@ -5,18 +5,21 @@ const axios = require('axios'); // HTTP library that connects to APIs
 const path = require('path');
 
 // Notification object
+// Reference: https://www.electronjs.org/docs/latest/tutorial/notifications
 const notification = {
-    title: 'BTC Alert',
-    body: 'BTC just reached your target price',
+    title: 'BTC Alert!',
+    body: 'BTC just reached your target price!',
     icon: path.join(__dirname, '../assets/img/btc.png')
 };
 
 // BTC EUR Section
+// Defining price variables
 var priceEUR = document.getElementById('priceEUR');
 var targetPriceEUR = document.getElementById('targetPriceEUR');
 var targetPriceValEUR;
 
 // Function that will fetch the current BTC price from an API, display it to screen and compare to target price
+// Reference: https://axios-http.com/docs/example
 function getBTCEUR() {
     axios.get('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC&tsyms=EUR')
         .then(res => {
@@ -26,20 +29,24 @@ function getBTCEUR() {
             // If statement to check BTC value is empty and if it's less than the current price
             if (targetPriceEUR.innerHTML != '' && targetPriceValEUR < crypto) {
                 // If ok, prompts notification to user
+                // Reference: https://www.electronjs.org/docs/latest/tutorial/notifications
                 const myNotification = new window.Notification(notification.title, notification);
             }
         })
 }
 // Run getBTC function and set interval to update price every 10 seconds
+// Reference: https://www.w3schools.com/jsref/met_win_setinterval.asp
 getBTCEUR();
 setInterval(getBTCEUR, 10000);
 
 // Clicking on the button will trigger the ipcRenderer to send a message to ipcMain to open new window
+// Reference: https://www.electronjs.org/docs/latest/api/ipc-renderer
 document.getElementById('notifyBtnEUR').addEventListener('click', event => {
     ipcRenderer.send('main:add');
 });
 
 // Receives targetPrice and updates the index.html file
+// Reference: https://www.electronjs.org/docs/latest/api/ipc-renderer
 ipcRenderer.on('targetPriceVal', (event, arg) => {
     targetPriceValEUR = Number(arg);
     targetPriceEUR.innerHTML = '€' + targetPriceValEUR.toLocaleString('en');

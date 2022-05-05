@@ -18,10 +18,12 @@
   },
   "homepage": "https://github.com/danrleimartins/electron-btc-app#readme",
   "devDependencies": {
-    "electron": "18.1.0"
+    "electron": "18.1.0",
+    "mocha": "^10.0.0"
   },
   "dependencies": {
     "@electron/remote": "^2.0.8",
-    "axios": "^0.27.2"
+    "axios": "^0.27.2",
+    "lunr": "^2.3.9"
   }
 }

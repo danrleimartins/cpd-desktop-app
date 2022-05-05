@@ -10,21 +10,24 @@
 </head>
 
 <body>
-    <p class="notify">Notify when me when BTC BRL reaches...</p>
+    <p class="notify">Notify when me when BTC price reaches...</p>
     <div class="row2">
         <div>
-            <input type="text" id="notifyValBRL" placeholder="R$">
+            <input type="number" id="notifyValBRL" placeholder="R$">
         </div>
         <button id="updateBtnBRL">Update</button>
     </div>
     <a id="closeBtnBRL">Close Window</a><br>
     <script>
+        // Import common modules
         const electron = require('electron')
         const { ipcRenderer } = electron;
 
+        // Returns the button and assigns to variable
         const closeBtnBRL = document.getElementById('closeBtnBRL');
 
         // Close window event
+        // Reference: https://www.electronjs.org/docs/latest/api/ipc-renderer
         closeBtnBRL.addEventListener('click', event => {
             ipcRenderer.send('close-window-brl');
         })
@@ -32,6 +35,7 @@
         const updateBtnBRL = document.getElementById('updateBtnBRL');
 
         // Send the input value to main.js
+        // Reference: https://www.electronjs.org/docs/latest/api/ipc-renderer
         updateBtnBRL.addEventListener('click', event => {
             ipcRenderer.send('update-notify-value-brl', document.getElementById('notifyValBRL').value);
 

@@ -8,12 +8,13 @@ const shell = require('electron').shell;
 process.env.NODE_ENV = 'development';
 
 // Windows variables
-let win;
-let addWindowEUR;
-let addWindowUSD;
-let addWindowBRL;
+let win; // main window
+let addWindowEUR; // notify EUR window
+let addWindowUSD; // notify USD window
+let addWindowBRL; // notify BRL window
 
 // Creating main window
+// Reference: https://www.electronjs.org/docs/latest/tutorial/quick-start and https://www.electronjs.org/docs/latest/api/browser-window
 const createWindow = () => {
     win = new BrowserWindow({
         width: 850,
@@ -30,12 +31,13 @@ const createWindow = () => {
 }
 
 // Exiting app when closing the window
+// Reference: https://www.electronjs.org/docs/latest/tutorial/quick-start
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
 })
 
-// This method will be called when Electron has finished initilization and is ready to open
-// the browser window.
+// This method will be called when Electron has finished initilization and is ready to open the browser window.
+// Reference: https://www.electronjs.org/docs/latest/tutorial/quick-start
 app.whenReady().then(() => {
     createWindow();
 
@@ -48,6 +50,7 @@ app.whenReady().then(() => {
 })
 
 // Create app's menu
+// Reference: Tutorial_Week_12 - Shopping App
 const mainMenuTemplate = [
     {
         label: 'Menu',
@@ -64,9 +67,9 @@ const mainMenuTemplate = [
                     shell.openExternal('https://github.com/danrleimartins/electron-btc-app')
                 }
             },
-            { type: 'separator' },
+            { type: 'separator' }, // display line to separate menu options
             {
-                label: 'Exit',
+                label: 'Exit', // exiting app on click
                 click() {
                     app.quit()
                 }
@@ -105,9 +108,9 @@ ipcMain.on('main:add', event => {
     addWindowEUR = new BrowserWindow({
         width: 500,
         height: 200,
-        frame: false, //removes top toolbar
-        transparent: true,
-        alwaysOnTop: true,
+        frame: false, // Removes top toolbar
+        transparent: true, // Transparent window design
+        alwaysOnTop: true, // Forces window to always stay on top of main
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -122,18 +125,21 @@ ipcMain.on('main:add', event => {
     });
 });
 
-// Closing window event
+// Closing new window event
+// Reference: https://www.electronjs.org/docs/latest/api/ipc-main
 ipcMain.on('close-window', event => {
     //close the window object
     addWindowEUR.close();
 })
 
 // Catch the input from add.html and send it back to index.js
+// Reference: https://www.electronjs.org/docs/latest/api/ipc-main and https://www.electronjs.org/docs/latest/api/web-contents
 ipcMain.on('update-notify-value', (event, arg) => {
     win.webContents.send('targetPriceVal', arg);
 })
 
-// BTC USD Add Window
+
+// BTC USD Add Window - The following lines of code follow the same model and references as the above
 ipcMain.on('main:addUSD', event => {
     addWindowUSD = new BrowserWindow({
         width: 500,
@@ -165,7 +171,7 @@ ipcMain.on('update-notify-value-usd', (event, arg) => {
     win.webContents.send('targetPriceValUSD', arg);
 })
 
-// BTC BRL Add Window
+// BTC BRL Add Window - - The following lines of code follow the same model and references as the above
 ipcMain.on('main:addBRL', event => {
     addWindowBRL = new BrowserWindow({
         width: 500,
